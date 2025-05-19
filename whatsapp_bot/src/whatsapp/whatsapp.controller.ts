@@ -42,7 +42,8 @@ export class WhatsappController {
         console.log('Sender Number:', senderNumber);
         console.log('Message:', messageText);
         console.log('Sender Name:', senderName);
-        await this.whatsappService.sendMessage(senderNumber, "Hello, this is a test message from the server!");
+
+        await this.whatsappService.handleUserMessage(senderNumber, messageText);
         
         res.sendStatus(200);
         }

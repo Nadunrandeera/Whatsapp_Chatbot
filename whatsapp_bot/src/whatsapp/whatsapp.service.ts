@@ -1,8 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { OpenaiService } from 'src/openai/openai.service';
 const axios = require('axios');
 
 @Injectable()
 export class WhatsappService {
+    constructor(private openaiService: OpenaiService) {}
+
+    async handleUserMessage(number: string, message: string) {
+       const reply = await this.openaiService.generateOpenAIResponse(message);
+       this.sendMessage(number, reply);
+    }
+
   async sendMessage(to: string, message: string) {
     let data = JSON.stringify({
       messaging_product: 'whatsapp',
