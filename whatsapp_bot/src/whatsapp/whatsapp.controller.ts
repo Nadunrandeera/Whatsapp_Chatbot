@@ -1,7 +1,11 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { WhatsappService } from './whatsapp.service';
 
 @Controller('whatsapp')
 export class WhatsappController {
+
+  constructor(private whatsappService:WhatsappService) {}
+  
     @Get('test')
     test(){
         return 'nadun';
@@ -26,7 +30,7 @@ export class WhatsappController {
   }
     }
     @Post('webhook')
-    handleWebhook(@Req() req, @Res() res) {
+    async handleWebhook(@Req() req, @Res() res) {
 
         const payload = req.body.entry;
         const change = payload[0].changes[0].value;
@@ -37,45 +41,11 @@ export class WhatsappController {
         console.log('Sender Number:', senderNumber);
         console.log('Message:', messageText);
         console.log('Sender Name:', senderName);
-        this.sendMessage(senderNumber,"Hello, this is a test message from the server!");
+        await this.whatsappService.sendMessage(senderNumber, "Hello, this is a test message from the server!");
         
         res.sendStatus(200);
         
          // Respond with 200 OK
-    }
-
-    async sendMessage(to: string, message: string) {
-      const axios = require('axios');
-      let data = JSON.stringify({
-        "messaging_product": "whatsapp",
-        "recipient_type": "individual",
-        "to": "+94710763969",
-        "type": "text",
-        "text": {
-          "preview_url": false,
-          "body": message
-        }
-      });
-
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: `https://graph.facebook.com/${process.env.WHATSAPP_API_vERSION}/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-        headers: { 
-          'Content-Type': 'application/json', 
-          'Authorization': `Bearer ${process.env.WHATSAPP_API_KEY}`,
-        },
-        data : data
-      };
-
-      axios.request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
     }
 
 }
