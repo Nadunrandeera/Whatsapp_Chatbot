@@ -16,5 +16,8 @@
     "url": "https://github.com/Nadunrandeera/Whatsapp_Chatbot/issues"
   },
   "homepage": "https://github.com/Nadunrandeera/Whatsapp_Chatbot#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "openai": "^4.100.0"
+  }
 }

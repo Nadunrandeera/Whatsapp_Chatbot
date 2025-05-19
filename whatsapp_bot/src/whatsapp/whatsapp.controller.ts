@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, Logger, Post, Req, Res } from '@nestjs/common';
 import { WhatsappService } from './whatsapp.service';
 
 @Controller('whatsapp')
 export class WhatsappController {
-
+  private readonly logger = new Logger(WhatsappController.name);
   constructor(private whatsappService:WhatsappService) {}
   
     @Get('test')
@@ -33,6 +33,7 @@ export class WhatsappController {
     async handleWebhook(@Req() req, @Res() res) {
 
         const payload = req.body.entry;
+        try{
         const change = payload[0].changes[0].value;
         const senderNumber = change.contacts[0].wa_id;
         const messageText = change.messages[0].text.body;
@@ -44,6 +45,11 @@ export class WhatsappController {
         await this.whatsappService.sendMessage(senderNumber, "Hello, this is a test message from the server!");
         
         res.sendStatus(200);
+        }
+        catch(e){
+          this.logger.error(e);
+          res.sendStatus(500);
+        }
         
          // Respond with 200 OK
     }
